@@ -34,9 +34,11 @@ ELSEIF (UNIX)
 	
 	include_directories(
 		/usr/local/Cellar/boost/1.75.0_1/include
+		/usr/local/Cellar/ta-lib/0.4.0/include/ta-lib
+		/usr/local/Cellar/curl/7.75.0/include/curl
 		${CMAKE_SOURCE_DIR}/lib/CTPForLinux64
-		${CMAKE_SOURCE_DIR}/lib/TalibForLinux64/include
-		${CMAKE_SOURCE_DIR}/lib/curl-7.63.0/linux763/include
+		# ${CMAKE_SOURCE_DIR}/lib/TalibForLinux64/include
+		# ${CMAKE_SOURCE_DIR}/lib/curl-7.63.0/linux763/include
 		${CMAKE_SOURCE_DIR}/lib/openssl-1.1.1a/libForLinux64/include
 		${CMAKE_SOURCE_DIR}/lib/log4cplus/include
 		${CMAKE_SOURCE_DIR}/thirdparty/DisruptorCpp
@@ -46,11 +48,13 @@ ELSEIF (UNIX)
 		)
 	
 	link_directories(
-		/usr/local/Cellar/boost/1.75.0_1/lib/
+		/usr/local/Cellar/boost/1.75.0_1/lib
+		/usr/local/Cellar/ta-lib/0.4.0/lib
+		/usr/local/Cellar/curl/7.75.0/lib
 		${CMAKE_SOURCE_DIR}/lib/CTPForLinux64
-		${CMAKE_SOURCE_DIR}/lib/TalibForLinux64/lib
+		# ${CMAKE_SOURCE_DIR}/lib/TalibForLinux64/lib
 		${CMAKE_SOURCE_DIR}/lib/log4cplus/libForLinux64
-		${CMAKE_SOURCE_DIR}/lib/curl-7.63.0/linux763/libForLinux64
+		# ${CMAKE_SOURCE_DIR}/lib/curl-7.63.0/linux763/libForLinux64
 		${CMAKE_SOURCE_DIR}/lib/openssl-1.1.1a/libForLinux64
 		)
 		
@@ -96,16 +100,17 @@ ELSEIF (UNIX)
 	
 		target_link_libraries(${PROJECT_NAME}
 			pthread
-			boost_thread
-			boost_system
+			boost_thread-mt
+			boost_system-mt
 			liblog4cplus.so
 			libthostmduserapi.so
 			libthosttraderapi.so
-			libta_abstract_cmr.a
+			#[[libta_abstract_cmr.a
 			libta_common_cmr.a
 			libta_func_cmr.a
-			libta_libc_cmr.a
-			libcurl.so
+			libta_libc_cmr.a]]
+			libta_lib.a
+			libcurl.a
 			libcrypto.so
 			libssl.so
 			cpr

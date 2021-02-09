@@ -6,6 +6,11 @@
 #include <iostream>
 #include <time.h>
 #include <assert.h>
+
+#include "ta_abstract.h"
+#include "ta_common.h"
+#include "ta_defs.h"
+#include "ta_func.h"
 #include "ta_libc.h"
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
@@ -28,67 +33,65 @@
 void testCpr()
 {
     //测试http访问是否有效
-    auto response = cpr::Get(cpr::Url{ "https://www.yahoo.com" },
-        cpr::Parameters{ { "hello", "world" } },
-        cpr::VerifySsl(false));
+    auto response = cpr::Get(cpr::Url{"https://www.yahoo.com"},
+                             cpr::Parameters{{"hello", "world"}},
+                             cpr::VerifySsl(false));
     std::cout << response.text << std::endl;
 
-    //test2 
-    auto r2 = cpr::Get(cpr::Url{ "https://api.github.com/repos/whoshuu/cpr/contributors" },
-        cpr::Authentication{ "user", "pass" },
-        cpr::Parameters{ {"anon", "true"}, {"key", "value"} });
+    //test2
+    auto r2 = cpr::Get(cpr::Url{"https://api.github.com/repos/whoshuu/cpr/contributors"},
+                       cpr::Authentication{"user", "pass"},
+                       cpr::Parameters{{"anon", "true"}, {"key", "value"}});
     std::cout << r2.status_code << std::endl;
     std::cout << r2.header["content-type"] << std::endl;
     std::cout << r2.text << std::endl;
     //test 3
 
     //test4
-    auto r4 = cpr::Post(cpr::Url{ "http://www.httpbin.org/post" },
-        cpr::Payload{ {"key", "value"} });
+    auto r4 = cpr::Post(cpr::Url{"http://www.httpbin.org/post"},
+                        cpr::Payload{{"key", "value"}});
     std::cout << r4.text << std::endl;
 
     //test5
-    auto r5 = cpr::Get(cpr::Url{ "http://www.httpbin.org/get" },
-        cpr::Parameters{ {"hello", "world"}, {"stay", "cool"} });
+    auto r5 = cpr::Get(cpr::Url{"http://www.httpbin.org/get"},
+                       cpr::Parameters{{"hello", "world"}, {"stay", "cool"}});
     std::cout << r5.url << std::endl; // http://www.httpbin.org/get?hello=world&stay=cool
     std::cout << r5.text << std::endl;
 
     //test 6
-     // Constructing it outside
-    auto parameters = cpr::Parameters{ {"hello", "world"}, {"stay", "cool"} };
-    auto r_outside = cpr::Get(cpr::Url{ "http://www.httpbin.org/get" }, parameters);
-    std::cout << r_outside.url << std::endl; // http://www.httpbin.org/get?hello=world&stay=cool
+    // Constructing it outside
+    auto parameters = cpr::Parameters{{"hello", "world"}, {"stay", "cool"}};
+    auto r_outside = cpr::Get(cpr::Url{"http://www.httpbin.org/get"}, parameters);
+    std::cout << r_outside.url << std::endl;  // http://www.httpbin.org/get?hello=world&stay=cool
     std::cout << r_outside.text << std::endl; // Same text response as above
-
 
     //test7
     //This sends up "key=value" as a "x-www-form-urlencoded" pair in the POST request.
     //To send data raw and unencoded, use Body instead of Payload :
 
-    auto r7 = cpr::Post(cpr::Url{ "http://www.httpbin.org/post" },
-        cpr::Body{ "This is raw POST data" },
-        cpr::Header{ {"Content-Type", "text/plain"} });
+    auto r7 = cpr::Post(cpr::Url{"http://www.httpbin.org/post"},
+                        cpr::Body{"This is raw POST data"},
+                        cpr::Header{{"Content-Type", "text/plain"}});
     std::cout << r7.text << std::endl;
     //test 8
-    auto r8 = cpr::Post(cpr::Url{ "http://www.httpbin.org/post" },
-        cpr::Multipart{ {"key", "large value"},
-                       {"name", cpr::File{"d:/temp/log.log"}} });
+    auto r8 = cpr::Post(cpr::Url{"http://www.httpbin.org/post"},
+                        cpr::Multipart{{"key", "large value"},
+                                       {"name", cpr::File{"d:/temp/log.log"}}});
     std::cout << r8.text << std::endl;
-
 
     //test 9
     // STL containers like vector, string, etc.
-    std::vector<char> content{ 't', 'e', 's', 't' };
-    auto r9 = cpr::Post(cpr::Url{ "http://www.httpbin.org/post" },
-        cpr::Multipart{ {"key", "large value"},
-                       {"name", cpr::Buffer{content.begin(), content.end(), "filename.txt"}} });
+    std::vector<char> content{'t', 'e', 's', 't'};
+    auto r9 = cpr::Post(cpr::Url{"http://www.httpbin.org/post"},
+                        cpr::Multipart{{"key", "large value"},
+                                       {"name", cpr::Buffer{content.begin(), content.end(), "filename.txt"}}});
 
     // C-style pointers
     const char *content2 = "test";
     int length = 4;
-    auto r10 = cpr::Post(cpr::Url{ "http://www.httpbin.org/post" },
-        cpr::Multipart{ {"key", "large value"},
-                       {"name", cpr::Buffer{content2, content2 + length, "filename.txt"}} });
+    auto r10 = cpr::Post(cpr::Url{"http://www.httpbin.org/post"},
+                         cpr::Multipart{{"key", "large value"},
+                                        {"name", cpr::Buffer{content2, content2 + length, "filename.txt"}}});
 }
 
 void testJson()
@@ -124,14 +127,13 @@ void testJson()
     writer.EndObject();
     std::cout << buff.GetString() << std::endl;
 
-
     // 1. Parse a JSON string into DOM.
-    const char* json = "{\"project\":\"rapidjson\",\"stars\":10}";
+    const char *json = "{\"project\":\"rapidjson\",\"stars\":10}";
     rapidjson::Document d;
     d.Parse(json);
 
     // 2. Modify it by DOM.
-    rapidjson::Value& s = d["stars"];
+    rapidjson::Value &s = d["stars"];
     s.SetInt(s.GetInt() + 1);
 
     // 3. Stringify the DOM
@@ -150,10 +152,11 @@ void testJson()
         outfile << buffer.GetString() << std::endl;
         outfile.close();
     }
-    else std::cerr << "Error! Unable to open file:" << filename;
+    else
+        std::cerr << "Error! Unable to open file:" << filename;
 }
 
-//https ://blog.csdn.net/u012234115/article/details/81513747 
+//https ://blog.csdn.net/u012234115/article/details/81513747
 void testTalib()
 {
     std::cout << "ta-lib test" << std::endl;
@@ -164,20 +167,20 @@ void testTalib()
     //assert(retcode == TA_SUCCESS);
 
     // comput moving average price
-    TA_Real    close_price_array[400] = { 0 };
+    TA_Real close_price_array[400] = {0};
     // construct random price
     srand((unsigned)time(0));
     for (int i = 0; i < 400; i++)
         close_price_array[i] = rand() % 50 + 100;
 
-    TA_Real    out[400] = { 0 };
+    TA_Real out[400] = {0};
     TA_Integer out_begin = 0;
     TA_Integer out_nb_element = 0;
 
     retcode = TA_MA(0, 399,
-        &close_price_array[0],
-        30, TA_MAType_SMA,
-        &out_begin, &out_nb_element, &out[0]);
+                    &close_price_array[0],
+                    30, TA_MAType_SMA,
+                    &out_begin, &out_nb_element, &out[0]);
 
     std::cout << "---- compute output ----" << std::endl;
     std::cout << "out_begin_index: " << out_begin << std::endl;
@@ -202,14 +205,14 @@ void testTalib()
     TA_Real    outRealLowerBand[400] = { 0 };
     */
     retcode = TA_BBANDS(0,
-        399,
-        &close_price_array[0],
-        30,
-        1.5,
-        1.5,
-        TA_MAType_SMA,
-        &out_begin, &out_nb_element,
-        &outRealUpperBand[0], &outRealMiddleBand[0], &outRealLowerBand[0]);
+                        399,
+                        &close_price_array[0],
+                        30,
+                        1.5,
+                        1.5,
+                        TA_MAType_SMA,
+                        &out_begin, &out_nb_element,
+                        &outRealUpperBand[0], &outRealMiddleBand[0], &outRealLowerBand[0]);
 
     for (int i = 0; i < out_nb_element; i++)
     {
@@ -239,52 +242,51 @@ typedef char char_11[11];
 
 struct LFMarketDataField
 {
-    char_13  	TradingDay;            //交易日
-    char_31  	InstrumentID;          //合约代码
-    char_9   	ExchangeID;            //交易所代码
-    char_64  	ExchangeInstID;        //合约在交易所的代码
-    double   	LastPrice;             //最新价
-    double   	PreSettlementPrice;    //上次结算价
-    double   	PreClosePrice;         //昨收盘
-    double   	PreOpenInterest;       //昨持仓量
-    double   	OpenPrice;             //今开盘
-    double   	HighestPrice;          //最高价
-    double   	LowestPrice;           //最低价
-    int      	Volume;                //数量
-    double   	Turnover;              //成交金额
-    double   	OpenInterest;          //持仓量
-    double   	ClosePrice;            //今收盘
-    double   	SettlementPrice;       //本次结算价
-    double   	UpperLimitPrice;       //涨停板价
-    double   	LowerLimitPrice;       //跌停板价
-    double   	PreDelta;              //昨虚实度
-    double   	CurrDelta;             //今虚实度
-    char_13  	UpdateTime;            //最后修改时间
-    int      	UpdateMillisec;        //最后修改毫秒
-    double   	BidPrice1;             //申买价一
-    int      	BidVolume1;            //申买量一
-    double   	AskPrice1;             //申卖价一
-    int      	AskVolume1;            //申卖量一
-    double   	BidPrice2;             //申买价二
-    int      	BidVolume2;            //申买量二
-    double   	AskPrice2;             //申卖价二
-    int      	AskVolume2;            //申卖量二
-    double   	BidPrice3;             //申买价三
-    int      	BidVolume3;            //申买量三
-    double   	AskPrice3;             //申卖价三
-    int      	AskVolume3;            //申卖量三
-    double   	BidPrice4;             //申买价四
-    int      	BidVolume4;            //申买量四
-    double   	AskPrice4;             //申卖价四
-    int      	AskVolume4;            //申卖量四
-    double   	BidPrice5;             //申买价五
-    int      	BidVolume5;            //申买量五
-    double   	AskPrice5;             //申卖价五
-    int      	AskVolume5;            //申卖量五
+    char_13 TradingDay;        //交易日
+    char_31 InstrumentID;      //合约代码
+    char_9 ExchangeID;         //交易所代码
+    char_64 ExchangeInstID;    //合约在交易所的代码
+    double LastPrice;          //最新价
+    double PreSettlementPrice; //上次结算价
+    double PreClosePrice;      //昨收盘
+    double PreOpenInterest;    //昨持仓量
+    double OpenPrice;          //今开盘
+    double HighestPrice;       //最高价
+    double LowestPrice;        //最低价
+    int Volume;                //数量
+    double Turnover;           //成交金额
+    double OpenInterest;       //持仓量
+    double ClosePrice;         //今收盘
+    double SettlementPrice;    //本次结算价
+    double UpperLimitPrice;    //涨停板价
+    double LowerLimitPrice;    //跌停板价
+    double PreDelta;           //昨虚实度
+    double CurrDelta;          //今虚实度
+    char_13 UpdateTime;        //最后修改时间
+    int UpdateMillisec;        //最后修改毫秒
+    double BidPrice1;          //申买价一
+    int BidVolume1;            //申买量一
+    double AskPrice1;          //申卖价一
+    int AskVolume1;            //申卖量一
+    double BidPrice2;          //申买价二
+    int BidVolume2;            //申买量二
+    double AskPrice2;          //申卖价二
+    int AskVolume2;            //申卖量二
+    double BidPrice3;          //申买价三
+    int BidVolume3;            //申买量三
+    double AskPrice3;          //申卖价三
+    int AskVolume3;            //申卖量三
+    double BidPrice4;          //申买价四
+    int BidVolume4;            //申买量四
+    double AskPrice4;          //申卖价四
+    int AskVolume4;            //申卖量四
+    double BidPrice5;          //申买价五
+    int BidVolume5;            //申买量五
+    double AskPrice5;          //申卖价五
+    int AskVolume5;            //申卖量五
 };
 
-
-inline struct LFMarketDataField parseFrom(const struct LFMarketDataField& ori)
+inline struct LFMarketDataField parseFrom(const struct LFMarketDataField &ori)
 {
     struct LFMarketDataField res = {};
     memcpy(res.TradingDay, ori.TradingDay, 9);
@@ -335,17 +337,17 @@ inline struct LFMarketDataField parseFrom(const struct LFMarketDataField& ori)
 // 定义事件体
 struct testEvent
 {
-    int64_t id{ 0 };
+    int64_t id{0};
     LFMarketDataField md{0};
 };
 
 // 继承事件处理器接口
-class Worker : public Disruptor::IWorkHandler< testEvent >
+class Worker : public Disruptor::IWorkHandler<testEvent>
 {
 public:
     explicit Worker() {}
     // 重写事件处理回调函数
-    void onEvent(testEvent& event) override
+    void onEvent(testEvent &event) override
     {
         //std::cout << " _actuallyProcessed:" << _actuallyProcessed;
         _actuallyProcessed++;
@@ -355,8 +357,9 @@ public:
     {
         std::cout << "_actuallyProcessed:" << _actuallyProcessed << std::endl;
     }
+
 private:
-    int32_t _actuallyProcessed{ 0 };
+    int32_t _actuallyProcessed{0};
 };
 
 class Producer
@@ -369,16 +372,15 @@ public:
         // 创建调度器
         m_ptrTaskScheduler = std::make_shared<Disruptor::ThreadPerTaskScheduler>();
         // 创建Disruptor
-        m_ptrDisruptor = std::make_shared< Disruptor::disruptor<testEvent>>([]() { return testEvent(); } ,
-            m_ringBufferSize,
-            m_ptrTaskScheduler,
-            Disruptor::ProducerType::Single,
-            std::make_shared<Disruptor::SpinWaitWaitStrategy>()
-            );
+        m_ptrDisruptor = std::make_shared<Disruptor::disruptor<testEvent>>([]() { return testEvent(); },
+                                                                           m_ringBufferSize,
+                                                                           m_ptrTaskScheduler,
+                                                                           Disruptor::ProducerType::Single,
+                                                                           std::make_shared<Disruptor::SpinWaitWaitStrategy>());
         // 创建事件处理器
         for (size_t i = 0; i < m_workerCount; i++)
         {
-            m_workers.push_back(std::make_shared< Worker >());
+            m_workers.push_back(std::make_shared<Worker>());
         }
         // 绑定
         m_ptrDisruptor->handleEventsWithWorkerPool(m_workers);
@@ -412,13 +414,12 @@ protected:
 
 private:
     std::shared_ptr<Disruptor::ThreadPerTaskScheduler> m_ptrTaskScheduler;
-    std::shared_ptr<Disruptor::disruptor<testEvent> > m_ptrDisruptor;
-    std::vector<std::shared_ptr<Disruptor::IWorkHandler<testEvent> > > m_workers;
-    std::int32_t m_ringBufferSize{ 1024 };
-    std::int32_t m_workerCount{ 1 };
-    std::int32_t m_schedulerCount{ 1 };
+    std::shared_ptr<Disruptor::disruptor<testEvent>> m_ptrDisruptor;
+    std::vector<std::shared_ptr<Disruptor::IWorkHandler<testEvent>>> m_workers;
+    std::int32_t m_ringBufferSize{1024};
+    std::int32_t m_workerCount{1};
+    std::int32_t m_schedulerCount{1};
 };
-
 
 void testDisruptor()
 {
@@ -426,7 +427,6 @@ void testDisruptor()
     Producer producer(1024, 1);
     producer.start();
     testEvent e;
-
 
     LFMarketDataField ori;
 
@@ -472,7 +472,7 @@ void testDisruptor()
     ori.BidVolume5 = 14;
     ori.AskPrice5 = 15;
     ori.AskVolume5 = 16;
-    
+
     for (size_t i = 0; i < 2000000; i++)
     {
         e.id = i;
@@ -483,8 +483,8 @@ void testDisruptor()
     for (int loop = 0; loop < 100; loop++)
     {
         int64_t start_nano = std::chrono::duration_cast<std::chrono::nanoseconds>(
-            std::chrono::steady_clock::now().time_since_epoch()
-            ).count();
+                                 std::chrono::steady_clock::now().time_since_epoch())
+                                 .count();
         for (size_t i = 0; i < 2000000; i++)
         {
             e.id = i;
@@ -533,23 +533,22 @@ void testDisruptor()
             producer.push(e);
         }
         int64_t end_nano = std::chrono::duration_cast<std::chrono::nanoseconds>(
-            std::chrono::steady_clock::now().time_since_epoch()
-            ).count();
+                               std::chrono::steady_clock::now().time_since_epoch())
+                               .count();
 
         average += (end_nano - start_nano);
     }
     std::cout << "use time:" << std::to_string(average / 100) << std::endl;
 
-
     //std::this_thread::sleep_for(std::chrono::seconds(10));
 }
 
-
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
     //testTalib();
     //testCpr();
     //testJson();
-    testDisruptor();//warm up
+    testDisruptor(); //warm up
 
     system("pause");
     return 0;

@@ -5,20 +5,20 @@
 
 #pragma once
 
-#include <boost/config.hpp>
+#include "boost/config.hpp"
 
 #if _MSC_VER // only on Windows
 
-# ifndef WIN32_LEAN_AND_MEAN
-#  define WIN32_LEAN_AND_MEAN    // Exclude rarely-used stuff from Windows headers
-# endif
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
+#endif
 
-# pragma warning(disable: 4512) // Assignment operator could not be generated
+#pragma warning(disable : 4512) // Assignment operator could not be generated
 
-# include "targetver.h"
-# include <tchar.h>
-# include <winsock2.h>
-# include <Windows.h>
+#include "targetver.h"
+#include <tchar.h>
+#include <winsock2.h>
+#include <Windows.h>
 #endif
 
 // STL includes
@@ -48,6 +48,6 @@
 //Error	C2589	'(': illegal token on right side of '::' Disruptor disruptorcpp\disruptor\util.h 52 :  std::numeric_limits< std::int64_t >::max()
 //fix build error of  by https://blog.csdn.net/u012750702/article/details/51530845
 #ifdef _WIN32
-	#undef min;
-	#undef max;
+#undef min;
+#undef max;
 #endif
