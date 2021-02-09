@@ -33,7 +33,7 @@ ELSEIF (UNIX)
 	MESSAGE(STATUS "###########################OS is UNIX-like OS's.###########################")
 	
 	include_directories(
-		/opt/kungfu/toolchain/boost-1.62.0/include
+		/usr/local/Cellar/boost/1.75.0_1/include
 		${CMAKE_SOURCE_DIR}/lib/CTPForLinux64
 		${CMAKE_SOURCE_DIR}/lib/TalibForLinux64/include
 		${CMAKE_SOURCE_DIR}/lib/curl-7.63.0/linux763/include
@@ -46,7 +46,7 @@ ELSEIF (UNIX)
 		)
 	
 	link_directories(
-		/opt/kungfu/toolchain/boost-1.62.0/lib/
+		/usr/local/Cellar/boost/1.75.0_1/lib/
 		${CMAKE_SOURCE_DIR}/lib/CTPForLinux64
 		${CMAKE_SOURCE_DIR}/lib/TalibForLinux64/lib
 		${CMAKE_SOURCE_DIR}/lib/log4cplus/libForLinux64
@@ -99,8 +99,8 @@ ELSEIF (UNIX)
 			boost_thread
 			boost_system
 			liblog4cplus.so
-			thostmduserapi.so
-			thosttraderapi.so
+			libthostmduserapi.so
+			libthosttraderapi.so
 			libta_abstract_cmr.a
 			libta_common_cmr.a
 			libta_func_cmr.a
