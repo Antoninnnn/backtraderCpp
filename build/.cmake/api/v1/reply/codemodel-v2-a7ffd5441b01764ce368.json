@@ -1,0 +1,77 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.7"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "backtrader",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Disruptor::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Disruptor-Debug-e7a9d358c98966a2e1d2.json",
+					"name" : "Disruptor",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "backtrader::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-backtrader-Debug-a7038f40fa49d8374f15.json",
+					"name" : "backtrader",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "cpr::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-cpr-Debug-b5f52f17b1ca08f274fb.json",
+					"name" : "cpr",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/yangyining/Documents/IE/quant/backtraderCpp/build",
+		"source" : "/Users/yangyining/Documents/IE/quant/backtraderCpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 2
+	}
+}
